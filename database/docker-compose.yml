@@ -1,44 +1,50 @@
-version: '3.5'
-
+version: '3'
 services:
-  postgres:
-    container_name: postgres_container
-    image: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      PGDATA: /data/postgres
-    volumes:
-       - postgres:/data/postgres
-    ports:
-      - "5432:5432"
-    restart: unless-stopped
 
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-guillaumebouchard@orange.fr}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
-    ports:
-      - "8080:80"
-    volumes:
-       - pgadmin:/root/.pgadmin
-    restart: unless-stopped
-
-  pgweb:
-    container_name: pgweb
+  redis:
+    container_name: auth_cache
+    image: "bitnami/redis:latest"
     restart: always
-    image: sosedoff/pgweb
-    ports: 
-      - "8081:8081" 
-    links: 
-      - postgres 
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+    environment: 
+      - REDIS_PASSWORD=password
+  
+  redis-commander:
+    container_name: auth_cache_dash
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
     environment:
-      - DATABASE_URL=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
-    depends_on:
-      - postgres
+    - REDIS_HOSTS=local:redis:6379:0:password
+    - REDIS_PASSWORD=password
+    ports:
+    - "8081:8081"
+
+  mongo:
+    container_name: auth_bdd
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - bdd:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  mongo-express:
+    container_name: auth_bdd_dash
+    image: mongo-express
+    restart: always
+    ports:
+      - "8080:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
 
 volumes:
-    postgres:
-    pgadmin:
+    bdd:
+    redis_data:
