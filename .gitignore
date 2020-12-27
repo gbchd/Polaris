@@ -14,7 +14,14 @@
 # Dependency directories (remove the comment below to include it)
 vendor/
 
-web/
+# Folder containing the source files for the frontend (working on this, will be added later)
+web-dev/
 
 # Hide the env file (you can see an example in the dev.env file)
 .env
+
+# Little main function for testing purposes
+cmd/dev/
+
+# Public and private keys for jwt signing
+keys
