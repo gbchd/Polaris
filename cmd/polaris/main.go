@@ -20,7 +20,7 @@ func main() {
 
 	/* OAUTH */
 	r.HandleFunc("/authorize", oauth.AuthorizeHandler).Methods("GET")
-	r.HandleFunc("/token", NotImplemented).Methods("POST")
+	r.HandleFunc("/token", oauth.TokenHandler).Methods("POST")
 	r.HandleFunc("/key", token.ServePubKeyHandler).Methods("GET")
 
 	/* USER */

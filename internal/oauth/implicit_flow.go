@@ -20,7 +20,7 @@ func implicitFlow(w http.ResponseWriter, r *http.Request, data LoginFormData) {
 
 	q := ur.Query()
 
-	at, err := token.CreateAccessToken(data.ClientId, data.Email)
+	at, err := token.CreateAccessToken(data.ClientId)
 	if err != nil {
 		fmt.Println(err)
 	}

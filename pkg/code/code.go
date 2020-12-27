@@ -11,9 +11,9 @@ import (
 const Lifetime = 60 * time.Second
 
 type CodeData struct {
-	Openid     bool   `json:"openid"`
-	PKCEMethod string `json:"pkce_method"`
-	PKCEValue  string `json:"pkce_value"`
+	Email           string `json:"email"`
+	ChallengeMethod string `json:"code_challenge_method"`
+	Challenge       string `json:"code_challenge"`
 }
 
 func GenerateCode(data CodeData) (string, error) {

@@ -62,11 +62,10 @@ func ServePubKeyHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(publicKey)
 }
 
-func CreateAccessToken(client_id string, user_mail string) (string, error) {
+func CreateAccessToken(client_id string) (string, error) {
 	Claims := jwt.MapClaims{}
 	Claims["iss"] = "Polaris"
 	Claims["aud"] = client_id
-	Claims["email"] = user_mail
 	Claims["type"] = "access"
 	Claims["exp"] = time.Now().Unix() + int64(LifetimeAccessToken)
 	Claims["iat"] = time.Now().Unix()
@@ -77,14 +76,13 @@ func CreateAccessToken(client_id string, user_mail string) (string, error) {
 	return token, err
 }
 
-func CreateRefreshToken(client_id string, user_mail string, access_token string) (string, error) {
+func CreateRefreshToken(client_id string, access_token string) (string, error) {
 	h := sha256.New()
 	h.Write([]byte(access_token))
 
 	Claims := jwt.MapClaims{}
 	Claims["iss"] = "Polaris"
 	Claims["aud"] = client_id
-	Claims["email"] = user_mail
 	Claims["type"] = "refresh"
 	Claims["at_hash"] = h.Sum(nil)
 	Claims["exp"] = time.Now().Unix() + int64(LifetimeAccessToken)
