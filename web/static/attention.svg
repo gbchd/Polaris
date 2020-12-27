@@ -1,0 +1,15 @@
+<svg id="attention" enable-background="new 0 0 512.14 512.14" height="512" viewBox="0 0 512.14 512.14" width="512"
+    xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <path d="m268.97 46.07h-25.8l-243.17 397.76 13.72 22.24h484.7l13.72-22.24z" fill="#3BA575"/>
+        <path d="m512.14 443.83-13.72 22.24h-242.37v-420h12.92z" fill="#42b883"/>
+        <g fill="#34495E">
+            <path d="m241.07 371.07h30v30h-30z"/>
+            <path d="m241.07 176.07h30v160h-30z"/>
+        </g>
+        <g fill="#2E4154">
+            <path d="m256.05 176.07h15.02v160h-15.02z"/>
+            <path d="m256.05 371.07h15.02v30h-15.02z"/>
+        </g>
+    </g>
+</svg>

@@ -27,7 +27,7 @@ type LoginFormData struct {
 }
 
 func ServeLoginPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "web-dev/login/index.html")
+	http.ServeFile(w, r, "web/login/index.html")
 }
 
 func LoginFormHandler(w http.ResponseWriter, r *http.Request) {

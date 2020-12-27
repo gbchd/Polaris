@@ -18,6 +18,6 @@ func ErrorPageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error in GET parameters : ", err)
 	}
 
-	tmpl := template.Must(template.ParseFiles("web-dev/error/index.html"))
+	tmpl := template.Must(template.ParseFiles("web/error/index.html"))
 	tmpl.Execute(w, data)
 }
