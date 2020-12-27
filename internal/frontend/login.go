@@ -24,11 +24,3 @@ type LoginFormData struct {
 func ServeLoginPage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "web/login/index.html")
 }
-
-func ServeAuthorizationPage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Not Implemented"))
-}
-
-func AuthorizationPageFormHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Not Implemented"))
-}

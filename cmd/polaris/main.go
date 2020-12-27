@@ -16,6 +16,8 @@ func main() {
 
 	r := mux.NewRouter()
 
+	r.HandleFunc("/", frontend.ServeHomePage).Methods("GET")
+
 	/* OAUTH */
 	r.HandleFunc("/authorize", oauth.AuthorizeHandler).Methods("GET")
 	r.HandleFunc("/token", NotImplemented).Methods("POST")
@@ -24,13 +26,11 @@ func main() {
 	/* USER */
 	r.HandleFunc("/login", frontend.ServeLoginPage).Methods("GET")
 	r.HandleFunc("/login", oauth.LoginFormHandler).Methods("POST")
-	//r.HandleFunc("/login/oauth/authorize", frontend.ServeAuthorizationPage).Methods("GET")
-	//r.HandleFunc("/login/oauth/authorize", frontend.AuthorizationPageFormHandler).Methods("POST")
 
 	r.HandleFunc("/error", frontend.ErrorPageHandler).Methods("GET")
 
-	r.HandleFunc("/register", NotImplemented).Methods("GET")
-	r.HandleFunc("/register", NotImplemented).Methods("POST")
+	r.HandleFunc("/register", frontend.ServeRegisterPage).Methods("GET")
+	r.HandleFunc("/register", frontend.RegisterFormHandler).Methods("POST")
 
 	r.HandleFunc("/recover", NotImplemented).Methods("GET")
 	r.HandleFunc("/recover", NotImplemented).Methods("POST")
