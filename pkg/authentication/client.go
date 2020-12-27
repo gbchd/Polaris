@@ -8,13 +8,13 @@ import (
 )
 
 type Client struct {
-	Id           primitive.ObjectID `bson:"_id,omitempty"`
-	Creator      string             `bson:"creator"`
-	ClientId     string             `bson:"client_id"`
-	ClientSecret string             `bson:"client_secret"`
-	Name         string             `bson:"name"`
-	RedirectUri  string             `bson:"redirect_uri"`
-	Scopes       []string           `bson:"scopes"`
+	Id           primitive.ObjectID `bson:"_id,omitempty" json:"-"`
+	Creator      string             `bson:"creator" json:"creator"`
+	ClientId     string             `bson:"client_id" json:"client_id"`
+	ClientSecret string             `bson:"client_secret" json:"client_secret"`
+	Name         string             `bson:"name" json:"name"`
+	RedirectUri  string             `bson:"redirect_uri" json:"redirect_uri"`
+	Scopes       []string           `bson:"scopes" json:"scopes"`
 }
 
 type Scope struct {
