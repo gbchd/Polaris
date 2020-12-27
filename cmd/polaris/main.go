@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/guillaumebchd/polaris/internal/frontend"
+	"github.com/guillaumebchd/polaris/internal/oauth"
 	"github.com/guillaumebchd/polaris/pkg/token"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	r := mux.NewRouter()
 
 	/* OAUTH */
-	r.HandleFunc("/authorize", NotImplemented).Methods("GET")
+	r.HandleFunc("/authorize", oauth.AuthorizeHandler).Methods("GET")
 	r.HandleFunc("/token", NotImplemented).Methods("POST")
 	r.HandleFunc("/key", token.ServePubKeyHandler).Methods("GET")
 

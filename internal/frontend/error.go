@@ -1,8 +1,8 @@
 package frontend
 
 import (
+	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func ErrorPageHandler(w http.ResponseWriter, r *http.Request) {
 	var data ErrorData
 	err := decoder.Decode(&data, r.URL.Query())
 	if err != nil {
-		log.Fatal("Error in GET parameters : ", err)
+		fmt.Println("Error in GET parameters : ", err)
 	}
 
 	tmpl := template.Must(template.ParseFiles("web/error/index.html"))
