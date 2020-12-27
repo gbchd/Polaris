@@ -23,7 +23,7 @@ func main() {
 
 	/* USER */
 	r.HandleFunc("/login", frontend.ServeLoginPage).Methods("GET")
-	r.HandleFunc("/login", frontend.LoginFormHandler).Methods("POST")
+	r.HandleFunc("/login", oauth.LoginFormHandler).Methods("POST")
 	//r.HandleFunc("/login/oauth/authorize", frontend.ServeAuthorizationPage).Methods("GET")
 	//r.HandleFunc("/login/oauth/authorize", frontend.AuthorizationPageFormHandler).Methods("POST")
 
@@ -40,7 +40,7 @@ func main() {
 	r.HandleFunc("/client", NotImplemented).Methods("POST")
 
 	/* Static */
-	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web-dev/static/"))))
+	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static/"))))
 
 	srv := &http.Server{
 		Handler:      r,
