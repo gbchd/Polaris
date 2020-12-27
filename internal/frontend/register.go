@@ -33,7 +33,6 @@ func RegisterFormHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Password != data.VPassword {
-		// Stop the flow et redirect vers error
 		oauth.RedirectToError(w, r, "", "invalid_password_match", "The two given passwords don't match.")
 		return
 	}
