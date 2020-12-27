@@ -2,6 +2,7 @@ package code
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"time"
 
@@ -26,14 +27,28 @@ func init() {
 	})
 }
 
-func storeCodeInCache(code string, lifetime time.Duration) error {
-	err := rdb.Set(ctx, code, "", lifetime).Err()
-	return err
+func storeCodeInCache(code string, data CodeData, lifetime time.Duration) error {
+	v, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(ctx, code, v, lifetime).Err()
+}
+
+func getCodeInCache(code string) (CodeData, error) {
+	value, err := rdb.Get(ctx, code).Bytes()
+	if err != nil {
+		return CodeData{}, err
+	}
+
+	var data CodeData
+	err = json.Unmarshal(value, &data)
+
+	return data, err
 }
 
 func isCodeInCache(code string) bool {
 	_, err := rdb.Get(ctx, code).Result()
-	//fmt.Println(err)
 	return err == nil
 }
 
