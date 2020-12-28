@@ -110,7 +110,7 @@ func decodeClientIdAndSecret(b64clientId string, b64ClientSecret string) (string
 		return "", "", err
 	}
 
-	clientSecret, err := base64.StdEncoding.DecodeString(b64clientId)
+	clientSecret, err := base64.StdEncoding.DecodeString(b64ClientSecret)
 	if err != nil {
 		return string(clientId), "", err
 	}
