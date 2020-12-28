@@ -22,6 +22,8 @@ type TokenData struct {
 	Code         string `schema:"code"`
 	CodeVerifier string `schema:"code_verifier"`
 	Scope        string `schema:"scope"`
+	Username     string `schema:"username"` // Should be the email
+	Password     string `schema:"password"`
 }
 
 type ErrorResponseJSON struct {

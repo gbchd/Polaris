@@ -104,6 +104,9 @@ func tokenCodeFlow(w http.ResponseWriter, r *http.Request, data TokenData) {
 	}
 
 	rt, err := token.CreateRefreshToken(data.ClientId, at)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	res.RefreshToken = rt
 
