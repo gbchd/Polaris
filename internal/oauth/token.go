@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -51,18 +52,25 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error in GET parameters : ", err)
 	}
 
-	clientId, clientSecret, ok := r.BasicAuth()
+	b64clientId, b64clientSecret, ok := r.BasicAuth()
 	if !ok {
 		w.Header().Set("WWW-Authenticate", `Basic realm="Authorization Required"`)
 		w.WriteHeader(401)
 		return
-	} else {
-		client, err := auth.GetClient(clientId)
-		if err != nil || client.ClientSecret != clientSecret {
-			respondError(w, r, "invalid_client_creds", "The client_id and client_secret given in the request do not match")
-			return
-		}
 	}
+
+	clientId, clientSecret, err := decodeClientIdAndSecret(b64clientId, b64clientSecret)
+	if err != nil {
+		respondError(w, r, "error_decode", "Couldn't decode the base64 encoded client_id and client_secret")
+		return
+	}
+
+	client, err := auth.GetClient(string(clientId))
+	if err != nil || client.ClientSecret != clientSecret {
+		respondError(w, r, "invalid_client_creds", "The client_id and client_secret given in the request do not match")
+		return
+	}
+
 	data.ClientId = clientId
 
 	switch data.GrantType {
@@ -94,4 +102,18 @@ func respondError(w http.ResponseWriter, r *http.Request, err_code string, err_d
 	w.WriteHeader(http.StatusBadRequest)
 	w.Write(j)
 	return
+}
+
+func decodeClientIdAndSecret(b64clientId string, b64ClientSecret string) (string, string, error) {
+	clientId, err := base64.StdEncoding.DecodeString(b64clientId)
+	if err != nil {
+		return "", "", err
+	}
+
+	clientSecret, err := base64.StdEncoding.DecodeString(b64clientId)
+	if err != nil {
+		return string(clientId), "", err
+	}
+
+	return string(clientId), string(clientSecret), err
 }
