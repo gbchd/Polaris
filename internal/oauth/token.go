@@ -18,7 +18,6 @@ const (
 type TokenData struct {
 	GrantType    string `schema:"grant_type"`
 	ClientId     string `schema:"client_id"`
-	ClientSecret string `schema:"client_secret"`
 	Code         string `schema:"code"`
 	CodeVerifier string `schema:"code_verifier"`
 	Scope        string `schema:"scope"`
@@ -52,16 +51,19 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error in GET parameters : ", err)
 	}
 
-	// We check that the client id is here and is not invalid
-	if data.ClientId == "" {
-		respondError(w, r, "missing_client_id", "The client_id is missing from the request")
+	clientId, clientSecret, ok := r.BasicAuth()
+	if !ok {
+		w.Header().Set("WWW-Authenticate", `Basic realm="Authorization Required"`)
+		w.WriteHeader(401)
 		return
+	} else {
+		client, err := auth.GetClient(clientId)
+		if err != nil || client.ClientSecret != clientSecret {
+			respondError(w, r, "invalid_client_creds", "The client_id and client_secret given in the request do not match")
+			return
+		}
 	}
-	_, err = auth.GetClient(data.ClientId)
-	if err != nil {
-		respondError(w, r, "invalid_client_id", "The client_id given in the request is not valid")
-		return
-	}
+	data.ClientId = clientId
 
 	switch data.GrantType {
 	case GrantTypeCode:
