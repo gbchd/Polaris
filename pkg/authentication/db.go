@@ -52,7 +52,6 @@ func init() {
 
 	clientCollection = db.Collection("client")
 	scopeCollection = db.Collection("scope")
-
 }
 
 /*

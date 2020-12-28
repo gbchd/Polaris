@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+    redis:
+        container_name: auth_cache
+        image: "bitnami/redis:latest"
+        restart: always
+        volumes:
+            - 'redis_data:/bitnami/redis/data'
+        environment: 
+            - REDIS_PASSWORD=password               # CHANGE THIS !
+
+    mongo:
+        container_name: auth_bdd
+        image: mongo
+        restart: always
+
+        volumes:
+            - bdd:/data/db
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root        # CHANGE THIS !
+            MONGO_INITDB_ROOT_PASSWORD: password    # CHANGE THIS !
+
+    polaris:
+        container_name: polaris
+        build: .
+        ports: 
+            - "8000:8000"
+        restart: always
+        environment: 
+            # Mongo conf
+            DB_ADDR: auth_bdd
+            DB_PORT: 27017
+            DB_USERNAME: root       # MONGO_INITDB_ROOT_USERNAME
+            DB_PASSWORD: password   # MONGO_INITDB_ROOT_PASSWORD
+            DB_DATABASE: polaris
+            # Redis conf
+            REDIS_URL: auth_cache
+            REDIS_PORT: 6379
+            REDIS_PASSWORD: password # REDIS_PASSWORD
+
+volumes:
+        bdd:
+        redis_data:
