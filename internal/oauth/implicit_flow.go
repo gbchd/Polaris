@@ -20,7 +20,11 @@ func implicitFlow(w http.ResponseWriter, r *http.Request, data LoginFormData) {
 
 	q := ur.Query()
 
-	at, err := token.CreateAccessToken(data.ClientId)
+	accessToken := token.AccessToken{
+		Issuer:   "Polaris",
+		Audience: data.ClientId,
+	}
+	at, err := accessToken.Encode()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -28,7 +32,7 @@ func implicitFlow(w http.ResponseWriter, r *http.Request, data LoginFormData) {
 	q.Add("access_token", at)
 	q.Add("token_type", "Bearer")
 
-	dur := int(token.LifetimeAccessToken.Seconds())
+	dur := int(token.AccessTokenLifetime.Seconds())
 	q.Add("expires_in", strconv.Itoa(dur))
 
 	if strings.Contains(data.Scope, "openid") {
@@ -37,7 +41,17 @@ func implicitFlow(w http.ResponseWriter, r *http.Request, data LoginFormData) {
 			fmt.Println(err)
 		}
 
-		id_t, err := token.CreateIdToken(data.ClientId, user)
+		idToken := token.IdToken{
+			Issuer:   "Polaris",
+			Audience: data.ClientId,
+			Email:    user.Email,
+			Name:     user.Name,
+		}
+		id_t, err := idToken.Encode()
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		q.Add("id_token", id_t)
 	}
 

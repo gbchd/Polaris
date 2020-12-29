@@ -12,14 +12,19 @@ import (
 func clientsCredsFlow(w http.ResponseWriter, r *http.Request, data TokenData) {
 	// We should handle the scopes here
 	res := ResponseJSON{}
-	at, err := token.CreateAccessToken(data.ClientId)
+
+	accessToken := token.AccessToken{
+		Issuer:   "Polaris",
+		Audience: data.ClientId,
+	}
+	at, err := accessToken.Encode()
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	res.TokenType = "Bearer"
 	res.AccessToken = at
-	res.ExpiresIn = strconv.Itoa(int(token.LifetimeAccessToken.Seconds()))
+	res.ExpiresIn = strconv.Itoa(int(token.AccessTokenLifetime.Seconds()))
 
 	if data.Scope != "" {
 		res.Scope = data.Scope

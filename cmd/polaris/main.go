@@ -21,6 +21,7 @@ func main() {
 	*/
 	godotenv.Load()
 	code.Initialize()
+	token.Initialize()
 
 	r := mux.NewRouter()
 

@@ -22,14 +22,18 @@ func resourceOwnerFlow(w http.ResponseWriter, r *http.Request, data TokenData) {
 
 	res := ResponseJSON{}
 
-	at, err := token.CreateAccessToken(data.ClientId)
+	accessToken := token.AccessToken{
+		Issuer:   "Polaris",
+		Audience: data.ClientId,
+	}
+	at, err := accessToken.Encode()
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	res.TokenType = "Bearer"
 	res.AccessToken = at
-	res.ExpiresIn = strconv.Itoa(int(token.LifetimeAccessToken.Seconds()))
+	res.ExpiresIn = strconv.Itoa(int(token.AccessTokenLifetime.Seconds()))
 
 	if strings.Contains(data.Scope, "openid") {
 		user, err := authentication.GetUser(data.Username)
@@ -37,7 +41,13 @@ func resourceOwnerFlow(w http.ResponseWriter, r *http.Request, data TokenData) {
 			fmt.Println(err)
 		}
 
-		id_t, err := token.CreateIdToken(data.ClientId, user)
+		idToken := token.IdToken{
+			Issuer:   "Polaris",
+			Audience: data.ClientId,
+			Email:    user.Email,
+			Name:     user.Name,
+		}
+		id_t, err := idToken.Encode()
 		if err != nil {
 			fmt.Println(err)
 		}
