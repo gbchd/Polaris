@@ -16,13 +16,13 @@ import (
 )
 
 func authorizeCodeFlow(w http.ResponseWriter, r *http.Request, data LoginFormData) {
-	c_data := code.CodeData{
+	c_data := code.Data{
 		Email:           data.Email,
 		ChallengeMethod: data.CodeChallengeMethod,
 		Challenge:       data.CodeChallenge,
 	}
 
-	c, err := code.GenerateCode(c_data)
+	c, err := code.Generate(c_data)
 	if err != nil {
 		RedirectToError(w, r, data.RedirectUri, "internal_error", "Something went wrong when creating your code.")
 		return
@@ -50,7 +50,7 @@ func tokenCodeFlow(w http.ResponseWriter, r *http.Request, data TokenData) {
 		return
 	}
 
-	c, err := code.Check(data.Code)
+	c, err := code.Get(data.Code)
 	if err != nil {
 		respondError(w, r, "invalid_code", "The given code is invalid or has expired")
 		return

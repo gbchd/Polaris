@@ -9,10 +9,18 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/guillaumebchd/polaris/internal/frontend"
 	"github.com/guillaumebchd/polaris/internal/oauth"
+	"github.com/guillaumebchd/polaris/pkg/code"
 	"github.com/guillaumebchd/polaris/pkg/token"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	/*
+		Setup of pkg
+	*/
+	godotenv.Load()
+	code.Initialize()
 
 	r := mux.NewRouter()
 

@@ -1,33 +1,21 @@
 package code
 
 import (
-	"context"
 	"encoding/json"
-	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/joho/godotenv"
 )
 
-var rdb *redis.Client
-var ctx = context.TODO()
-
-func init() {
-	godotenv.Load()
-
-	redis_url := os.Getenv("REDIS_URL")
-	redis_port := os.Getenv("REDIS_PORT")
-	redis_password := os.Getenv("REDIS_PASSWORD")
-
+func Connexion() {
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     redis_url + ":" + redis_port,
-		Password: redis_password,
+		Addr:     RedisUrl + ":" + RedisPort,
+		Password: RedisPassword,
 		DB:       0,
 	})
 }
 
-func storeCodeInCache(code string, data CodeData, lifetime time.Duration) error {
+func storeCodeInCache(code string, data Data, lifetime time.Duration) error {
 	v, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -35,13 +23,13 @@ func storeCodeInCache(code string, data CodeData, lifetime time.Duration) error 
 	return rdb.Set(ctx, code, v, lifetime).Err()
 }
 
-func getCodeInCache(code string) (CodeData, error) {
+func getCodeInCache(code string) (Data, error) {
 	value, err := rdb.Get(ctx, code).Bytes()
 	if err != nil {
-		return CodeData{}, err
+		return Data{}, err
 	}
 
-	var data CodeData
+	var data Data
 	err = json.Unmarshal(value, &data)
 
 	return data, err
