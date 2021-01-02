@@ -10,6 +10,7 @@ import (
 	"github.com/guillaumebchd/polaris/internal/frontend"
 	"github.com/guillaumebchd/polaris/internal/oauth"
 	"github.com/guillaumebchd/polaris/pkg/code"
+	"github.com/guillaumebchd/polaris/pkg/reset"
 	"github.com/guillaumebchd/polaris/pkg/token"
 	"github.com/joho/godotenv"
 )
@@ -22,6 +23,7 @@ func main() {
 	godotenv.Load()
 	code.Initialize()
 	token.Initialize()
+	reset.Initialize()
 
 	r := mux.NewRouter()
 
@@ -41,8 +43,11 @@ func main() {
 	r.HandleFunc("/register", frontend.ServeRegisterPage).Methods("GET")
 	r.HandleFunc("/register", frontend.RegisterFormHandler).Methods("POST")
 
-	r.HandleFunc("/recover", NotImplemented).Methods("GET")
-	r.HandleFunc("/recover", NotImplemented).Methods("POST")
+	r.HandleFunc("/recover", frontend.ServeRecoverPage).Methods("GET")
+	r.HandleFunc("/recover", frontend.RecoverFormHandler).Methods("POST")
+
+	r.HandleFunc("/reset/{code}", frontend.ServeResetPage).Methods("GET")
+	r.HandleFunc("/reset/{code}", frontend.ServeRecoverPage).Methods("POST")
 
 	/* CLIENTS */
 	r.HandleFunc("/client", NotImplemented).Methods("GET")

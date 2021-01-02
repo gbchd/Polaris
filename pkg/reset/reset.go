@@ -1,14 +1,8 @@
-/*
-Package Code implements a simple library for creating random code.
-
-These codes are meant to be used in the authorization code flow of OAuth2.0. We use a custom library name crypto to generate the code.
-
-The code are stored in a redis cache.
-*/
-package code
+package reset
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -32,37 +26,35 @@ func Initialize() error {
 	RedisPort = os.Getenv("CACHE_REDIS_PORT")
 	RedisPassword = os.Getenv("CACHE_REDIS_PASSWORD")
 
-	codeLifetime, err := strconv.Atoi(os.Getenv("CODE_LIFETIME"))
+	resetLifetime, err := strconv.Atoi(os.Getenv("RESET_LINK_KLIFETIME"))
 	if err == nil {
-		Lifetime = time.Duration(codeLifetime) * time.Second
+		Lifetime = time.Duration(resetLifetime) * time.Second
 	}
 
 	Connexion()
 	return err
 }
 
-type Data struct {
-	Email           string `json:"email"`
-	ChallengeMethod string `json:"code_challenge_method"`
-	Challenge       string `json:"code_challenge"`
-}
-
-func Generate(data Data) (string, error) {
+func Generate(email string) (string, error) {
 	code, err := generateUniqueCode()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	err = storeCodeInCache(code, data, Lifetime)
+	err = storeCodeInCache(code, email, Lifetime)
 	return code, err
 }
 
-func Get(code string) (Data, error) {
-	data, err := getCodeInCache(code)
+func Get(code string) (string, error) {
+	email, err := getCodeInCache(code)
 	if err == nil {
 		deleteCodeInCache(code)
 	}
-	return data, err
+	return email, err
+}
+
+func Exist(code string) bool {
+	return isCodeInCache(code)
 }
 
 func generateUniqueCode() (string, error) {
@@ -77,5 +69,6 @@ func generateUniqueCode() (string, error) {
 			return "", err
 		}
 	}
+
 	return code, err
 }

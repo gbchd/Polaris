@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/schema"
 	"github.com/guillaumebchd/polaris/internal/oauth"
 	"github.com/guillaumebchd/polaris/pkg/authentication"
 )
+
+var decoder = schema.NewDecoder()
 
 type RegisterFormData struct {
 	Name      string `schema:"name"`
